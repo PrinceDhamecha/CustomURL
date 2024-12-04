@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        input {
+            width: 300px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Shortener</h1>
+    <p>Enter a URL to shorten</p>
+    <input type="text" id="urlInput" placeholder="Enter URL here"><br><br>
+    <input type="text" id="customShortUrl" placeholder="Custom Short URL"><br><br>
+    <button onclick="shortenUrl()">Shorten URL</button>
+    <p id="result"></p>
+
+    <script>
+        async function shortenUrl() {
+            const url = document.getElementById('urlInput').value;
+            const customShortUrl = document.getElementById('customShortUrl').value;
+
+            if (!url) {
+                alert("Please enter a URL.");
+                return;
+            }
+
+            // Send the request to the server
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ originalUrl: url, customShortUrl: customShortUrl })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                document.getElementById('result').innerText = data.error;
+            } else {
+                document.getElementById('result').innerText = `Shortened URL: ${data.shortUrl}` ;
+            }
+        }
+    </script>
+</body>
+</html>
